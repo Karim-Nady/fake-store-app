@@ -1,16 +1,118 @@
-# React + Vite
+# Fake Store App
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern e-commerce application built with React, demonstrating clean architecture, state management, and responsive design.
 
-Currently, two official plugins are available:
+## 🚀 Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+### Core Features
 
-## React Compiler
+- ✅ Product listing with sorting and pagination
+- ✅ Product detail pages
+- ✅ Create new products with form validation
+- ✅ Responsive design (mobile & desktop)
+- ✅ Error handling and loading states
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### Bonus Features
 
-## Expanding the ESLint configuration
+- ✅ Shopping cart with quantity management
+- ✅ User authentication (login/logout)
+- ✅ Protected routes
+- ✅ Persistent state across sessions
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## 🛠️ Tech Stack
+
+- **Framework**: React 18 + Vite
+- **State Management**: Zustand
+- **Routing**: React Router v6
+- **Form Handling**: React Hook Form
+- **Styling**: Tailwind CSS
+- **Icons**: Lucide React
+- **API**: Fake Store API
+
+## 📦 Installation
+
+```bash
+# Clone the repository
+git clone https://github.com/YOUR_USERNAME/fake-store-app.git
+cd fake-store-app
+
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
+```
+
+The app will open at `http://localhost:5173`
+
+## 🏗️ Project Structure
+
+```
+src/
+├── components/
+│   ├── common/         # Reusable UI components
+│   ├── products/       # Product-specific components
+│   ├── cart/          # Cart components
+│   └── layout/        # Layout components
+├── pages/             # Page components
+├── store/             # Zustand stores
+├── services/          # API service layer
+├── hooks/             # Custom React hooks
+└── utils/             # Helper functions
+```
+
+## 🎨 Design Features
+
+- Custom color palette with semantic naming
+- Consistent spacing and typography system
+- Smooth animations and transitions
+- Mobile-first responsive design
+- Accessible form inputs with validation
+- Professional loading and error states
+
+## 🔐 Authentication
+
+Use these credentials to test authentication:
+
+- **Username**: `mor_2314`
+- **Password**: `83r5^_`
+
+## 🧪 Testing
+
+```bash
+# Run linter
+npm run lint
+
+# Build for production
+npm run build
+
+# Preview production build
+npm run preview
+```
+
+## 📝 Development Notes
+
+- State persists across page reloads using localStorage
+- All forms include proper validation
+- API errors are handled gracefully
+- Components are built for reusability
+- Code follows React best practices
+
+## 🤝 Contributing
+
+This is a technical assessment project. Not open for contributions.
+
+## 📄 License
+
+MIT License
+
+## 👤 Author
+
+**Your Name**
+
+- GitHub: [@Karim-Nady](https://github.com/Karim-Nady)
+- LinkedIn: [karim-nady](https://www.linkedin.com/in/karim-nady/)
+
+---
+
+**Built as a Frontend Technical Assessment** 🚀
