@@ -3,6 +3,7 @@ import { useLocation, Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { LogIn, User, Lock, AlertCircle, ShoppingBag } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
+import { useToastStore } from '../store/useToastStore';
 import Button from '../components/common/Button';
 import Input from '../components/form/Input';
 import Card from '../components/common/Card';
@@ -32,6 +33,8 @@ const LoginPage = () => {
             from
         );
     };
+
+    const { addToast } = useToastStore();
 
     return (
         <div className="min-h-[80vh] flex items-center justify-center py-12 animate-fade-in">
@@ -141,20 +144,6 @@ const LoginPage = () => {
                         </div>
                     </div>
                 </Card>
-
-                {/* Footer */}
-                <div className="text-center mt-6">
-                    <p className="text-sm text-neutral-600">
-                        Don't have an account?{' '}
-                        <button
-                            onClick={() => alert('Signup feature coming soon!')}
-                            className="text-primary-600 hover:text-primary-700 font-medium"
-                        >
-                            Sign up
-                        </button>
-                    </p>
-                </div>
-
                 {/* Back to Home */}
                 <div className="text-center mt-4">
                     <Link
