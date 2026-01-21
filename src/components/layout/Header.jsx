@@ -1,12 +1,18 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { ShoppingCart, User, LogOut, Plus } from 'lucide-react';
 import { useAuthStore } from '../../store/useAuthStore';
 import { useCartStore } from '../../store/useCartStore';
 import Button from '../common/Button';
 
 const Header = () => {
+    const navigate = useNavigate();
     const { isAuthenticated, user, logout } = useAuthStore();
     const itemCount = useCartStore((state) => state.getItemCount());
+
+    const handleLogout = () => {
+        logout(); // This now properly clears the auth-token for Axios
+        navigate('/login');
+    };
 
     return (
         <header className="bg-white border-b border-neutral-200 sticky top-0 z-50">
@@ -49,7 +55,7 @@ const Header = () => {
                                 <span className="text-sm text-neutral-700 hidden sm:block">
                                     {user?.username || 'User'}
                                 </span>
-                                <Button variant="ghost" size="sm" onClick={logout}>
+                                <Button variant="ghost" size="sm" onClick={handleLogout}>
                                     <LogOut className="h-5 w-5" />
                                 </Button>
                             </div>

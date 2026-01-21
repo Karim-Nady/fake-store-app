@@ -1,5 +1,7 @@
 import { Outlet } from 'react-router-dom';
 import Header from './Header';
+import Footer from './Footer';
+import ToastContainer from '../common/Toast';
 
 const Layout = () => {
     return (
@@ -8,13 +10,9 @@ const Layout = () => {
             <main className="flex-1 container-custom py-8">
                 <Outlet />
             </main>
-            <footer className="bg-neutral-900 text-white py-8">
-                <div className="container-custom">
-                    <p className="text-center text-sm text-neutral-400">
-                        © 2024 Fake Store. Frontend Technical Assessment.
-                    </p>
-                </div>
-            </footer>
+            <Footer />
+            {/* Toast Notifications */}
+            <ToastContainer />
         </div>
     );
 };

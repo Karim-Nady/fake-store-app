@@ -97,11 +97,11 @@
 
   /* Enhanced Card with Glass Effect */
   .card {
-    @apply bg-white/80 backdrop-blur-sm rounded-2xl shadow-card transition-all duration-300 hover:shadow-card-hover border border-neutral-100/50;
+    @apply p-4 bg-white/80 backdrop-blur-sm rounded-2xl shadow-card transition-all duration-300 hover:shadow-card-hover border border-neutral-100/50;
   }
 
   .card-glass {
-    @apply bg-white/60 backdrop-blur-lg border border-white/20 shadow-xl;
+    @apply p-4 bg-white/60 backdrop-blur-lg border border-white/20 shadow-xl;
   }
 
   /* Enhanced Input */

@@ -1,17 +1,32 @@
 import { useNavigate } from 'react-router-dom';
-import { ShoppingBag, Trash2, Plus, Minus, ArrowLeft, ShoppingCart } from 'lucide-react';
-import { useCartStore } from '../store/useCartStore';
+import { ShoppingBag, Trash2, ArrowLeft, ShoppingCart } from 'lucide-react';
+import { useCart } from '../hooks/useCart';
+import { toast } from '../store/useToastStore';
 import { formatCurrency } from '../utils/formatters';
 import Button from '../components/common/Button';
 import Card from '../components/common/Card';
+import CartItem from '../components/cart/CartItem';
 import EmptyState from '../components/common/EmptyState';
 
 const CartPage = () => {
     const navigate = useNavigate();
-    const { items, updateQuantity, removeItem, clearCart, getTotal } = useCartStore();
+    const { items, itemCount, total, updateQuantity, removeFromCart, clearCart } = useCart();
 
-    const total = getTotal();
-    const itemCount = items.reduce((sum, item) => sum + item.quantity, 0);
+    const handleRemoveItem = (productId) => {
+        removeFromCart(productId);
+        toast.success('Item removed from cart');
+    };
+
+    const handleClearCart = () => {
+        if (window.confirm('Are you sure you want to clear your cart?')) {
+            clearCart();
+            toast.info('Cart cleared');
+        }
+    };
+
+    const handleCheckout = () => {
+        toast.info('Checkout feature coming soon!', { duration: 3000 });
+    };
 
     // Empty cart state
     if (items.length === 0) {
@@ -66,7 +81,7 @@ const CartPage = () => {
                         </div>
                         <Button
                             variant="ghost"
-                            onClick={clearCart}
+                            onClick={handleClearCart}
                             className="text-danger-600 hover:bg-danger-50"
                         >
                             <Trash2 className="h-5 w-5" />
@@ -83,7 +98,7 @@ const CartPage = () => {
                                 key={item.id}
                                 item={item}
                                 onUpdateQuantity={updateQuantity}
-                                onRemove={removeItem}
+                                onRemove={handleRemoveItem}
                             />
                         ))}
                     </div>
@@ -123,7 +138,7 @@ const CartPage = () => {
                                     variant="primary"
                                     size="lg"
                                     className="w-full mb-3"
-                                    onClick={() => alert('Checkout feature coming soon!')}
+                                    onClick={handleCheckout}
                                 >
                                     Proceed to Checkout
                                 </Button>
@@ -163,85 +178,6 @@ const CartPage = () => {
                 </div>
             </div>
         </div>
-    );
-};
-
-// Cart Item Component
-const CartItem = ({ item, onUpdateQuantity, onRemove }) => {
-    const handleQuantityChange = (newQuantity) => {
-        if (newQuantity < 1) {
-            onRemove(item.id);
-        } else {
-            onUpdateQuantity(item.id, newQuantity);
-        }
-    };
-
-    return (
-        <Card className="p-4 hover:shadow-card-hover transition-shadow">
-            <div className="flex gap-4">
-                {/* Image */}
-                <div className="w-24 h-24 flex-shrink-0 bg-neutral-50 rounded-lg overflow-hidden">
-                    <img
-                        src={item.image}
-                        alt={item.title}
-                        className="w-full h-full object-contain p-2"
-                    />
-                </div>
-
-                {/* Details */}
-                <div className="flex-1 min-w-0">
-                    <div className="flex justify-between gap-4 mb-2">
-                        <h3 className="font-semibold text-neutral-900 line-clamp-2">
-                            {item.title}
-                        </h3>
-                        <button
-                            onClick={() => onRemove(item.id)}
-                            className="text-neutral-400 hover:text-danger-600 transition-colors flex-shrink-0"
-                            aria-label="Remove item"
-                        >
-                            <Trash2 className="h-5 w-5" />
-                        </button>
-                    </div>
-
-                    <p className="text-sm text-neutral-600 capitalize mb-3">
-                        {item.category}
-                    </p>
-
-                    <div className="flex items-center justify-between">
-                        {/* Quantity Controls */}
-                        <div className="flex items-center border border-neutral-300 rounded-lg">
-                            <button
-                                onClick={() => handleQuantityChange(item.quantity - 1)}
-                                className="px-3 py-1.5 hover:bg-neutral-100 transition-colors"
-                                aria-label="Decrease quantity"
-                            >
-                                <Minus className="h-4 w-4" />
-                            </button>
-                            <span className="px-4 py-1.5 font-semibold min-w-[50px] text-center">
-                                {item.quantity}
-                            </span>
-                            <button
-                                onClick={() => handleQuantityChange(item.quantity + 1)}
-                                className="px-3 py-1.5 hover:bg-neutral-100 transition-colors"
-                                aria-label="Increase quantity"
-                            >
-                                <Plus className="h-4 w-4" />
-                            </button>
-                        </div>
-
-                        {/* Price */}
-                        <div className="text-right">
-                            <p className="text-xl font-bold text-primary-600">
-                                {formatCurrency(item.price * item.quantity)}
-                            </p>
-                            <p className="text-sm text-neutral-600">
-                                {formatCurrency(item.price)} each
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </Card>
     );
 };
 

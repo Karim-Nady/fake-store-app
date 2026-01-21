@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form';
 import { ArrowLeft, Package, CheckCircle, AlertCircle } from 'lucide-react';
 import { productService } from '../services/productService';
 import { useProductStore } from '../store/useProductStore';
+import { toast } from '../store/useToastStore';
 import Button from '../components/common/Button';
 import Input from '../components/common/Input';
 import TextArea from '../components/common/TextArea';
@@ -17,8 +18,6 @@ const CreateProductPage = () => {
     const [categories, setCategories] = useState([]);
     const [loadingCategories, setLoadingCategories] = useState(true);
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [submitSuccess, setSubmitSuccess] = useState(false);
-    const [submitError, setSubmitError] = useState(null);
 
     const {
         register,
@@ -49,6 +48,7 @@ const CreateProductPage = () => {
             setCategories(data);
         } catch (error) {
             console.error('Failed to fetch categories:', error);
+            toast.error('Failed to load categories. Using defaults.');
             // Fallback categories if API fails
             setCategories(['electronics', 'jewelery', "men's clothing", "women's clothing"]);
         } finally {
@@ -58,8 +58,6 @@ const CreateProductPage = () => {
 
     const onSubmit = async (data) => {
         setIsSubmitting(true);
-        setSubmitError(null);
-        setSubmitSuccess(false);
 
         try {
             // Convert price to number
@@ -74,16 +72,23 @@ const CreateProductPage = () => {
             // Add to local store
             addProduct({ ...productData, id: response.id });
 
-            // Show success
-            setSubmitSuccess(true);
+            // Show success toast
+            toast.success('Product created successfully!', {
+                title: 'Success',
+                duration: 3000,
+            });
+
+            // Reset form
             reset();
 
-            // Redirect after 2 seconds
+            // Redirect after brief delay
             setTimeout(() => {
                 navigate('/');
-            }, 2000);
+            }, 1500);
         } catch (error) {
-            setSubmitError(error.message || 'Failed to create product. Please try again.');
+            toast.error(error.message || 'Failed to create product. Please try again.', {
+                title: 'Error',
+            });
         } finally {
             setIsSubmitting(false);
         }
@@ -118,28 +123,6 @@ const CreateProductPage = () => {
                         Fill in the details below to add a new product to the store.
                     </p>
                 </div>
-
-                {/* Success Message */}
-                {submitSuccess && (
-                    <div className="alert alert-success mb-8 animate-slide-down">
-                        <CheckCircle className="h-5 w-5" />
-                        <div>
-                            <p className="font-medium">Product created successfully!</p>
-                            <p className="text-sm mt-1">Redirecting to products page...</p>
-                        </div>
-                    </div>
-                )}
-
-                {/* Error Message */}
-                {submitError && (
-                    <div className="alert alert-danger mb-8 animate-slide-down">
-                        <AlertCircle className="h-5 w-5" />
-                        <div>
-                            <p className="font-medium">Failed to create product</p>
-                            <p className="text-sm mt-1">{submitError}</p>
-                        </div>
-                    </div>
-                )}
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     {/* Form Section */}
@@ -292,7 +275,7 @@ const CreateProductPage = () => {
                                         size="lg"
                                         className="flex-1"
                                         loading={isSubmitting}
-                                        disabled={isSubmitting || submitSuccess}
+                                        disabled={isSubmitting}
                                     >
                                         {isSubmitting ? 'Creating Product...' : 'Create Product'}
                                     </Button>

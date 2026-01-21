@@ -1,20 +1,15 @@
-import { useState, useEffect } from 'react';
-import { useNavigate, useLocation, Link } from 'react-router-dom';
+import { useEffect } from 'react';
+import { useLocation, Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { LogIn, User, Lock, AlertCircle, ShoppingBag } from 'lucide-react';
-import { authService } from '../services/authService';
-import { useAuthStore } from '../store/useAuthStore';
+import { useAuth } from '../hooks/useAuth';
 import Button from '../components/common/Button';
 import Input from '../components/common/Input';
 import Card from '../components/common/Card';
 
 const LoginPage = () => {
-    const navigate = useNavigate();
     const location = useLocation();
-    const { login, isAuthenticated } = useAuthStore();
-
-    const [isSubmitting, setIsSubmitting] = useState(false);
-    const [loginError, setLoginError] = useState(null);
+    const { isAuthenticated, login, loading, error } = useAuth();
 
     const {
         register,
@@ -27,41 +22,15 @@ const LoginPage = () => {
         },
     });
 
-    // Redirect if already authenticated
-    useEffect(() => {
-        if (isAuthenticated) {
-            const from = location.state?.from?.pathname || '/';
-            navigate(from, { replace: true });
-        }
-    }, [isAuthenticated, navigate, location]);
-
     const onSubmit = async (data) => {
-        setIsSubmitting(true);
-        setLoginError(null);
-
-        try {
-            const response = await authService.login({
+        const from = location.state?.from?.pathname || '/';
+        await login(
+            {
                 username: data.username,
                 password: data.password,
-            });
-
-            // Store user data and token
-            login(
-                {
-                    username: data.username,
-                    id: response.userId || 1,
-                },
-                response.token
-            );
-
-            // Redirect to previous page or home
-            const from = location.state?.from?.pathname || '/';
-            navigate(from, { replace: true });
-        } catch (error) {
-            setLoginError('Invalid username or password. Please try again.');
-        } finally {
-            setIsSubmitting(false);
-        }
+            },
+            from
+        );
     };
 
     return (
@@ -85,10 +54,10 @@ const LoginPage = () => {
                 {/* Login Form */}
                 <Card className="p-8">
                     {/* Error Alert */}
-                    {loginError && (
+                    {error && (
                         <div className="alert alert-danger mb-6 animate-slide-down">
                             <AlertCircle className="h-5 w-5" />
-                            <p>{loginError}</p>
+                            <p>{error}</p>
                         </div>
                     )}
 
@@ -103,7 +72,7 @@ const LoginPage = () => {
                                 autoComplete="username"
                                 error={errors.username?.message}
                                 required
-                                disabled={isSubmitting}
+                                disabled={loading}
                                 {...register('username', {
                                     required: 'Username is required',
                                     minLength: {
@@ -124,7 +93,7 @@ const LoginPage = () => {
                                 autoComplete="current-password"
                                 error={errors.password?.message}
                                 required
-                                disabled={isSubmitting}
+                                disabled={loading}
                                 {...register('password', {
                                     required: 'Password is required',
                                     minLength: {
@@ -141,11 +110,11 @@ const LoginPage = () => {
                             variant="primary"
                             size="lg"
                             className="w-full"
-                            loading={isSubmitting}
-                            disabled={isSubmitting}
+                            loading={loading}
+                            disabled={loading}
                         >
                             <LogIn className="h-5 w-5" />
-                            {isSubmitting ? 'Signing in...' : 'Sign In'}
+                            {loading ? 'Signing in...' : 'Sign In'}
                         </Button>
                     </form>
 

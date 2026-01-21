@@ -1,6 +1,6 @@
-
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import { authService } from '../services/authService';
 
 export const useAuthStore = create(
     persist(
@@ -10,6 +10,8 @@ export const useAuthStore = create(
             isAuthenticated: false,
 
             login: (userData, token) => {
+                localStorage.setItem('auth-token', token);
+
                 set({
                     user: userData,
                     token,
@@ -18,6 +20,8 @@ export const useAuthStore = create(
             },
 
             logout: () => {
+                authService.logout();
+
                 set({
                     user: null,
                     token: null,
@@ -30,9 +34,21 @@ export const useAuthStore = create(
                     user: { ...state.user, ...userData },
                 }));
             },
+
+            hydrate: () => {
+                const state = useAuthStore.getState();
+                if (state.token) {
+                    localStorage.setItem('auth-token', state.token);
+                }
+            },
         }),
         {
             name: 'auth-storage',
+            onRehydrateStorage: () => (state) => {
+                if (state?.token) {
+                    localStorage.setItem('auth-token', state.token);
+                }
+            },
         }
     )
 );

@@ -1,17 +1,13 @@
-// ==========================================
-// FILE: src/pages/ProductDetailsPage.jsx
-// ==========================================
-
 import { useState, useEffect } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, ShoppingCart, Star, Package, Tag } from 'lucide-react';
 import { productService } from '../services/productService';
 import { useCartStore } from '../store/useCartStore';
-import { formatCurrency, capitalizeFirst } from '../utils/formatters';
+import { toast } from '../store/useToastStore';
+import { formatCurrency } from '../utils/formatters';
 import Button from '../components/common/Button';
 import Badge from '../components/common/Badge';
-import LoadingSpinner from '../components/common/LoadingSpinner';
-import ErrorMessage from '../components/common/Toast';
+import ErrorMessage from '../components/common/ErrorMessage';
 import Card from '../components/common/Card';
 
 const ProductDetailsPage = () => {
@@ -49,6 +45,15 @@ const ProductDetailsPage = () => {
         for (let i = 0; i < quantity; i++) {
             addItem(product);
         }
+
+        // Show success toast
+        toast.success(
+            `${quantity} ${quantity === 1 ? 'item' : 'items'} added to cart`,
+            {
+                title: product.title,
+                duration: 3000,
+            }
+        );
 
         // Visual feedback
         setTimeout(() => {
