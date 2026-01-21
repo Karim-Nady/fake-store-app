@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from 'react';
-import { api } from '../services/api';
+import { productService } from '../services/productService';
 import { useProductStore } from '../store/useProductStore';
 
 export const useCategories = () => {
@@ -18,7 +18,7 @@ export const useCategories = () => {
         setLoading(true);
         setError(null);
         try {
-            const data = await api.getCategories();
+            const data = await productService.getCategories();
             setCategories(data);
         } catch (error) {
             setError(error.message);

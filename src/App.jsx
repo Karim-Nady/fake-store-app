@@ -7,7 +7,7 @@ import ProductListingPage from './pages/ProductListingPage';
 import ProductDetailsPage from './pages/ProductDetailsPage';
 import CreateProductPage from './pages/CreateProductPage';
 import CartPage from './pages/CartPage';
-import LoginPage from './pages/LoginPage';
+import LoginPage from './pages/AuthenticationPage';
 import NotFoundPage from './pages/NotFoundPage';
 
 // Protected Route Component

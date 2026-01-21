@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -10,7 +10,8 @@
   }
 
   body {
-    @apply bg-neutral-50 text-neutral-900 antialiased;
+    @apply bg-gradient-to-br from-neutral-50 via-white to-primary-50/30 text-neutral-900 antialiased;
+    min-height: 100vh;
   }
 
   h1,
@@ -19,11 +20,11 @@
   h4,
   h5,
   h6 {
-    @apply font-semibold tracking-tight;
+    @apply font-bold tracking-tight;
   }
 
   h1 {
-    @apply text-4xl lg:text-5xl;
+    @apply text-4xl lg:text-5xl bg-clip-text text-transparent bg-gradient-to-r from-neutral-900 to-neutral-700;
   }
 
   h2 {
@@ -37,6 +38,25 @@
   h4 {
     @apply text-xl lg:text-2xl;
   }
+
+  /* Smooth scrolling */
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-neutral-100;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-neutral-300 rounded-full hover:bg-neutral-400;
+  }
 }
 
 @layer components {
@@ -46,104 +66,120 @@
     @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
   }
 
-  /* Button Variants */
+  /* Button Variants with Enhanced Styling */
   .btn {
-    @apply inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-offset-2;
+    @apply inline-flex items-center justify-center gap-2 rounded-xl px-5 py-2.5 text-sm font-semibold transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-offset-2 shadow-sm hover:shadow-md;
   }
 
   .btn-primary {
-    @apply bg-primary-600 text-white hover:bg-primary-700 focus:ring-primary-500;
+    @apply bg-gradient-to-r from-primary-600 to-primary-700 text-white hover:from-primary-700 hover:to-primary-800 focus:ring-primary-500 hover:scale-[1.02] active:scale-[0.98];
   }
 
   .btn-secondary {
-    @apply bg-neutral-100 text-neutral-900 hover:bg-neutral-200 focus:ring-neutral-500;
+    @apply bg-gradient-to-r from-secondary-600 to-secondary-700 text-white hover:from-secondary-700 hover:to-secondary-800 focus:ring-secondary-500 hover:scale-[1.02] active:scale-[0.98];
   }
 
   .btn-danger {
-    @apply bg-danger-600 text-white hover:bg-danger-700 focus:ring-danger-500;
+    @apply bg-gradient-to-r from-danger-600 to-danger-700 text-white hover:from-danger-700 hover:to-danger-800 focus:ring-danger-500 hover:scale-[1.02] active:scale-[0.98];
   }
 
   .btn-success {
-    @apply bg-success-600 text-white hover:bg-success-700 focus:ring-success-500;
+    @apply bg-gradient-to-r from-success-600 to-success-700 text-white hover:from-success-700 hover:to-success-800 focus:ring-success-500 hover:scale-[1.02] active:scale-[0.98];
   }
 
   .btn-outline {
-    @apply border-2 border-neutral-300 bg-white text-neutral-700 hover:bg-neutral-50 focus:ring-neutral-500;
+    @apply border-2 border-neutral-300 bg-white text-neutral-700 hover:bg-neutral-50 hover:border-neutral-400 focus:ring-neutral-500 hover:shadow-md;
   }
 
   .btn-ghost {
-    @apply text-neutral-700 hover:bg-neutral-100 focus:ring-neutral-500;
+    @apply text-neutral-700 hover:bg-neutral-100 focus:ring-neutral-500 shadow-none hover:shadow-none;
   }
 
-  /* Card */
+  /* Enhanced Card with Glass Effect */
   .card {
-    @apply bg-white rounded-xl shadow-card transition-shadow duration-200 hover:shadow-card-hover;
+    @apply bg-white/80 backdrop-blur-sm rounded-2xl shadow-card transition-all duration-300 hover:shadow-card-hover border border-neutral-100/50;
   }
 
-  /* Input */
+  .card-glass {
+    @apply bg-white/60 backdrop-blur-lg border border-white/20 shadow-xl;
+  }
+
+  /* Enhanced Input */
   .input {
-    @apply w-full rounded-lg border border-neutral-300 bg-white px-4 py-2 text-sm placeholder:text-neutral-400 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20 disabled:bg-neutral-100 disabled:cursor-not-allowed;
+    @apply w-full rounded-xl border-2 border-neutral-200 bg-white px-4 py-2.5 text-sm placeholder:text-neutral-400 focus:border-primary-500 focus:outline-none focus:ring-4 focus:ring-primary-500/10 disabled:bg-neutral-50 disabled:cursor-not-allowed transition-all duration-200;
   }
 
   .input-error {
-    @apply border-danger-500 focus:border-danger-500 focus:ring-danger-500/20;
+    @apply border-danger-500 focus:border-danger-500 focus:ring-danger-500/10;
   }
 
   /* Label */
   .label {
-    @apply block text-sm font-medium text-neutral-700 mb-1.5;
+    @apply block text-sm font-semibold text-neutral-700 mb-2;
   }
 
-  /* Badge */
+  /* Badge with Modern Look */
   .badge {
-    @apply inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium;
+    @apply inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold backdrop-blur-sm;
   }
 
   .badge-primary {
-    @apply bg-primary-100 text-primary-700;
+    @apply bg-primary-100/80 text-primary-700 border border-primary-200;
   }
 
   .badge-success {
-    @apply bg-success-100 text-success-700;
+    @apply bg-success-100/80 text-success-700 border border-success-200;
   }
 
   .badge-danger {
-    @apply bg-danger-100 text-danger-700;
+    @apply bg-danger-100/80 text-danger-700 border border-danger-200;
   }
 
   .badge-warning {
-    @apply bg-warning-100 text-warning-700;
+    @apply bg-warning-100/80 text-warning-700 border border-warning-200;
   }
 
-  /* Alert */
+  /* Alert with Enhanced Styling */
   .alert {
-    @apply rounded-lg p-4 text-sm;
+    @apply rounded-xl p-4 text-sm backdrop-blur-sm;
   }
 
   .alert-success {
-    @apply bg-success-50 text-success-800 border border-success-200;
+    @apply bg-success-50/80 text-success-900 border-2 border-success-200;
   }
 
   .alert-danger {
-    @apply bg-danger-50 text-danger-800 border border-danger-200;
+    @apply bg-danger-50/80 text-danger-900 border-2 border-danger-200;
   }
 
   .alert-warning {
-    @apply bg-warning-50 text-warning-800 border border-warning-200;
+    @apply bg-warning-50/80 text-warning-900 border-2 border-warning-200;
   }
 
   .alert-info {
-    @apply bg-primary-50 text-primary-800 border border-primary-200;
+    @apply bg-primary-50/80 text-primary-900 border-2 border-primary-200;
   }
 
-  /* Skeleton */
+  /* Skeleton with Shimmer Effect */
   .skeleton {
-    @apply animate-pulse bg-neutral-200 rounded;
+    @apply bg-gradient-to-r from-neutral-200 via-neutral-300 to-neutral-200 rounded;
+    background-size: 200% 100%;
+    animation: shimmer 2s linear infinite;
   }
 
   /* Link */
   .link {
-    @apply text-primary-600 hover:text-primary-700 underline-offset-4 hover:underline transition-colors duration-200;
+    @apply text-primary-600 hover:text-primary-700 underline-offset-4 hover:underline transition-colors duration-200 font-medium;
+  }
+
+  /* Gradient Text */
+  .gradient-text {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-primary-600 to-secondary-600;
+  }
+
+  /* Floating Animation for CTAs */
+  .float {
+    animation: float 3s ease-in-out infinite;
   }
 }
 
@@ -151,4 +187,66 @@
   .text-balance {
     text-wrap: balance;
   }
+
+  /* Glass morphism utilities */
+  .glass {
+    @apply bg-white/30 backdrop-blur-lg border border-white/20;
+  }
+
+  .glass-dark {
+    @apply bg-neutral-900/30 backdrop-blur-lg border border-white/10;
+  }
+
+  /* Gradient backgrounds */
+  .bg-gradient-primary {
+    @apply bg-gradient-to-br from-primary-500 to-primary-700;
+  }
+
+  .bg-gradient-secondary {
+    @apply bg-gradient-to-br from-secondary-500 to-secondary-700;
+  }
+
+  .bg-gradient-success {
+    @apply bg-gradient-to-br from-success-500 to-success-700;
+  }
+
+  /* Hover glow effect */
+  .hover-glow {
+    @apply transition-shadow duration-300 hover:shadow-glow;
+  }
+
+  /* Image loading effect */
+  .img-loading {
+    @apply bg-gradient-to-r from-neutral-200 via-neutral-300 to-neutral-200;
+    background-size: 200% 100%;
+    animation: shimmer 2s linear infinite;
+  }
+}
+
+/* Additional Animations */
+@keyframes pulse-slow {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.8;
+  }
+}
+
+.animate-pulse-slow {
+  animation: pulse-slow 3s ease-in-out infinite;
+}
+
+/* Custom focus styles for better accessibility */
+*:focus-visible {
+  @apply outline-none ring-2 ring-primary-500 ring-offset-2 rounded;
+}
+
+/* Prevent focus ring on mouse click but keep for keyboard */
+*:focus:not(:focus-visible) {
+  outline: none;
+  box-shadow: none;
 }

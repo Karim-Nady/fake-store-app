@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { api } from '../services/api';
+import { productService } from '../services/productService';
 import { useProductStore } from '../store/useProductStore';
 
 export const useProducts = () => {
@@ -17,7 +17,7 @@ export const useProducts = () => {
         setLoading(true);
         setError(null);
         try {
-            const data = await api.getProducts();
+            const data = await productService.getProducts();
             setProducts(data);
         } catch (error) {
             setError(error.message);

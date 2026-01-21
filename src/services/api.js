@@ -1,4 +1,4 @@
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://fakestoreapi.com';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 class ApiService {
     async get(endpoint) {
@@ -45,28 +45,6 @@ class ApiService {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
         return response.json();
-    }
-
-    // Products
-    async getProducts() {
-        return this.get('/products');
-    }
-
-    async getProduct(id) {
-        return this.get(`/products/${id}`);
-    }
-
-    async getCategories() {
-        return this.get('/products/categories');
-    }
-
-    async createProduct(productData) {
-        return this.post('/products', productData);
-    }
-
-    // Auth
-    async login(credentials) {
-        return this.post('/auth/login', credentials);
     }
 }
 
