@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form';
 import { LogIn, User, Lock, AlertCircle, ShoppingBag } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import Button from '../components/common/Button';
-import Input from '../components/common/Input';
+import Input from '../components/form/Input';
 import Card from '../components/common/Card';
 
 const LoginPage = () => {

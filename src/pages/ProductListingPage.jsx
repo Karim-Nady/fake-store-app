@@ -1,10 +1,9 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { useProductStore } from '../store/useProductStore';
 import { productService } from '../services/productService';
 import ProductGrid from '../components/products/ProductGrid';
 import ProductFilters from '../components/products/ProductFilters';
-import LoadingSpinner from '../components/common/LoadingSpinner';
-import ErrorMessage from '../components/common/Toast';
 import EmptyState from '../components/common/EmptyState';
 import Pagination from '../components/common/Pagination';
 import ProductSkeleton from '../components/products/ProductSkeleton';
@@ -15,10 +14,66 @@ const PRODUCTS_PER_PAGE = 10;
 const ProductListingPage = () => {
     const { products, setProducts, loading, error, setLoading, setError } = useProductStore();
 
-    // Filter & Sort States
-    const [selectedCategory, setSelectedCategory] = useState('all');
+    // Filter States
+    const [searchParams, setSearchParams] = useSearchParams();
+    const [selectedCategory, setSelectedCategory] = useState(searchParams.get('category') || 'all');
     const [sortBy, setSortBy] = useState('default');
+    const [selectedRating, setSelectedRating] = useState(null);
+    const [priceMin, setPriceMin] = useState(0);
+    const [priceMax, setPriceMax] = useState(1000);
     const [currentPage, setCurrentPage] = useState(1);
+
+    // Scroll to products section
+    const productsRef = useRef(null);
+
+    // Sync state with URL params
+    useEffect(() => {
+        const categoryParam = searchParams.get('category');
+        if (categoryParam && categoryParam !== selectedCategory) {
+            setSelectedCategory(categoryParam);
+            // Scroll to products when engaging from external link (footer)
+            setTimeout(() => {
+                productsRef.current?.scrollIntoView({ behavior: 'smooth' });
+            }, 100);
+        } else if (!categoryParam && selectedCategory !== 'all') {
+            setSelectedCategory('all');
+            setTimeout(() => {
+                productsRef.current?.scrollIntoView({ behavior: 'smooth' });
+            }, 100);
+        }
+    }, [searchParams]);
+
+    // Update URL when category changes
+    const handleCategoryChange = (category) => {
+        setSelectedCategory(category);
+        if (category === 'all') {
+            searchParams.delete('category');
+            setSearchParams(searchParams);
+        } else {
+            setSearchParams({ category });
+        }
+        // Also scroll on manual filter change
+        productsRef.current?.scrollIntoView({ behavior: 'smooth' });
+    };
+
+    // Calculate min/max prices from products
+    const { minPrice, maxPrice } = useMemo(() => {
+        if (products.length === 0) return { minPrice: 0, maxPrice: 1000 };
+
+        const prices = products.map(p => p.price);
+        return {
+            minPrice: Math.floor(Math.min(...prices)),
+            maxPrice: Math.ceil(Math.max(...prices)),
+        };
+    }, [products]);
+
+    // Initialize price range when products load
+    useEffect(() => {
+        if (products.length > 0 && priceMin === 0 && priceMax === 1000) {
+            setPriceMin(minPrice);
+            setPriceMax(maxPrice);
+        }
+    }, [products, minPrice, maxPrice]);
 
     // Fetch products on mount
     useEffect(() => {
@@ -38,10 +93,9 @@ const ProductListingPage = () => {
         }
     };
 
-    // Get unique categories from products
+    // Get unique categories
     const categories = useMemo(() => {
-        const uniqueCategories = [...new Set(products.map(p => p.category))];
-        return uniqueCategories;
+        return [...new Set(products.map(p => p.category))];
     }, [products]);
 
     // Filter and sort products
@@ -51,6 +105,16 @@ const ProductListingPage = () => {
         // Filter by category
         if (selectedCategory !== 'all') {
             result = result.filter(p => p.category === selectedCategory);
+        }
+
+        // Filter by price range
+        result = result.filter(p => p.price >= priceMin && p.price <= priceMax);
+
+        // Filter by rating
+        if (selectedRating !== null) {
+            result = result.filter(p =>
+                p.rating && p.rating.rate >= selectedRating
+            );
         }
 
         // Sort
@@ -67,13 +131,20 @@ const ProductListingPage = () => {
             case 'name-desc':
                 result.sort((a, b) => b.title.localeCompare(a.title));
                 break;
+            case 'rating-desc':
+                result.sort((a, b) => {
+                    const ratingA = a.rating?.rate || 0;
+                    const ratingB = b.rating?.rate || 0;
+                    return ratingB - ratingA;
+                });
+                break;
             default:
                 // Keep original order
                 break;
         }
 
         return result;
-    }, [products, selectedCategory, sortBy]);
+    }, [products, selectedCategory, sortBy, selectedRating, priceMin, priceMax]);
 
     // Pagination
     const totalPages = Math.ceil(filteredAndSortedProducts.length / PRODUCTS_PER_PAGE);
@@ -86,13 +157,28 @@ const ProductListingPage = () => {
     // Reset to page 1 when filters change
     useEffect(() => {
         setCurrentPage(1);
-    }, [selectedCategory, sortBy]);
+    }, [selectedCategory, sortBy, selectedRating, priceMin, priceMax]);
 
     // Scroll to top on page change
     const handlePageChange = (page) => {
         setCurrentPage(page);
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
+
+    // Handle price range change
+    const handlePriceChange = (min, max) => {
+        setPriceMin(min);
+        setPriceMax(max);
+    };
+
+    // Calculate active filter count
+    const activeFilterCount = useMemo(() => {
+        let count = 0;
+        if (selectedCategory !== 'all') count++;
+        if (priceMin !== minPrice || priceMax !== maxPrice) count++;
+        if (selectedRating !== null) count++;
+        return count;
+    }, [selectedCategory, priceMin, priceMax, selectedRating, minPrice, maxPrice]);
 
     // Loading state
     if (loading && products.length === 0) {
@@ -111,14 +197,26 @@ const ProductListingPage = () => {
         );
     }
 
-    // Error state
+    // Error state with retry
     if (error) {
         return (
             <div className="animate-fade-in">
                 <div className="mb-8">
                     <h1 className="text-3xl font-bold text-neutral-900">Our Products</h1>
                 </div>
-                <ErrorMessage message={error} onRetry={fetchProducts} />
+                <EmptyState
+                    icon={Package}
+                    title="Failed to load products"
+                    description={error}
+                    action={
+                        <button
+                            onClick={fetchProducts}
+                            className="btn btn-primary"
+                        >
+                            Try Again
+                        </button>
+                    }
+                />
             </div>
         );
     }
@@ -142,48 +240,93 @@ const ProductListingPage = () => {
     return (
         <div className="animate-fade-in">
             {/* Header */}
-            <div className="mb-8">
+            <div className="mb-8" ref={productsRef}>
                 <h1 className="text-3xl font-bold text-neutral-900">Our Products</h1>
-                <p className="mt-2 text-neutral-600">
-                    Showing {paginatedProducts.length} of {filteredAndSortedProducts.length} products
-                </p>
+                <div className="mt-2 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <p className="text-neutral-600">
+                        Showing {paginatedProducts.length} of {filteredAndSortedProducts.length} products
+                    </p>
+
+                    {/* Active Filters Summary (Desktop) */}
+                    {(activeFilterCount > 0 || sortBy !== 'default') && (
+                        <div className="hidden lg:flex items-center gap-2">
+                            <span className="text-sm text-neutral-500 mr-2">
+                                {activeFilterCount} active filter{activeFilterCount !== 1 ? 's' : ''}
+                            </span>
+                            <button
+                                onClick={() => {
+                                    setSelectedCategory('all');
+                                    setPriceMin(minPrice);
+                                    setPriceMax(maxPrice);
+                                    setSelectedRating(null);
+                                    setSortBy('default');
+                                    setCurrentPage(1);
+                                }}
+                                className="text-xs text-red-600 hover:text-red-700 font-medium px-3 py-1 bg-red-50 hover:bg-red-100 rounded-full transition-colors"
+                            >
+                                Clear All
+                            </button>
+                        </div>
+                    )}
+                </div>
             </div>
 
-            {/* Filters */}
+            {/* Enhanced Filters & Layout */}
             <ProductFilters
                 categories={categories}
                 selectedCategory={selectedCategory}
-                onCategoryChange={setSelectedCategory}
+                onCategoryChange={handleCategoryChange}
                 sortBy={sortBy}
                 onSortChange={setSortBy}
-            />
+                minPrice={minPrice}
+                maxPrice={maxPrice}
+                priceMin={priceMin}
+                priceMax={priceMax}
+                onPriceChange={handlePriceChange}
+                selectedRating={selectedRating}
+                onRatingChange={setSelectedRating}
+                activeFilterCount={activeFilterCount}
+            >
+                {/* Products Grid or Empty State */}
+                {filteredAndSortedProducts.length === 0 ? (
+                    <EmptyState
+                        icon={Package}
+                        title="No products found"
+                        description="Try adjusting your filters to see more products."
+                        action={
+                            <button
+                                onClick={() => {
+                                    setSelectedCategory('all');
+                                    setPriceMin(minPrice);
+                                    setPriceMax(maxPrice);
+                                    setSelectedRating(null);
+                                    setSortBy('default');
+                                }}
+                                className="btn btn-primary"
+                            >
+                                Clear All Filters
+                            </button>
+                        }
+                    />
+                ) : (
+                    <>
+                        <ProductGrid products={paginatedProducts} />
 
-            {/* Products Grid */}
-            {filteredAndSortedProducts.length === 0 ? (
-                <EmptyState
-                    icon={Package}
-                    title="No products found"
-                    description="Try adjusting your filters to see more products."
-                />
-            ) : (
-                <>
-                    <ProductGrid products={paginatedProducts} />
-
-                    {/* Pagination */}
-                    {totalPages > 1 && (
-                        <div className="mt-12">
-                            <Pagination
-                                currentPage={currentPage}
-                                totalPages={totalPages}
-                                onPageChange={handlePageChange}
-                            />
-                        </div>
-                    )}
-                </>
-            )}
+                        {/* Pagination */}
+                        {totalPages > 1 && (
+                            <div className="mt-12">
+                                <Pagination
+                                    currentPage={currentPage}
+                                    totalPages={totalPages}
+                                    onPageChange={handlePageChange}
+                                />
+                            </div>
+                        )}
+                    </>
+                )}
+            </ProductFilters>
         </div>
     );
 };
 
 export default ProductListingPage;
-

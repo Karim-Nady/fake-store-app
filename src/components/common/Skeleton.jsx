@@ -15,7 +15,10 @@ export const ProductCardSkeleton = () => {
     );
 };
 
-// Product Details Skeleton
+/**
+ * ProductDetailsSkeleton Component
+ * Loading state for product details page
+ */
 export const ProductDetailsSkeleton = () => {
     return (
         <div className="animate-fade-in">
@@ -45,7 +48,10 @@ export const ProductDetailsSkeleton = () => {
     );
 };
 
-// Cart Item Skeleton
+/**
+ * CartItemSkeleton Component
+ * Loading state for cart items
+ */
 export const CartItemSkeleton = () => {
     return (
         <div className="card p-4 animate-pulse">
@@ -64,7 +70,10 @@ export const CartItemSkeleton = () => {
     );
 };
 
-// Form Skeleton
+/**
+ * FormSkeleton Component
+ * Loading state for forms
+ */
 export const FormSkeleton = () => {
     return (
         <div className="space-y-6 animate-pulse">
@@ -79,7 +88,14 @@ export const FormSkeleton = () => {
     );
 };
 
-// Text Skeleton
+/**
+ * TextSkeleton Component
+ * Loading state for text blocks
+ * 
+ * @param {Object} props
+ * @param {number} [props.lines=3] - Number of lines to show
+ * @param {string} [props.className] - Additional classes
+ */
 export const TextSkeleton = ({ lines = 3, className }) => {
     return (
         <div className={cn('space-y-2 animate-pulse', className)}>
@@ -94,7 +110,14 @@ export const TextSkeleton = ({ lines = 3, className }) => {
     );
 };
 
-// Grid Skeleton
+/**
+ * GridSkeleton Component
+ * Renders a grid of skeletons (defaulting to product cards)
+ * 
+ * @param {Object} props
+ * @param {number} [props.count=8] - Number of items
+ * @param {React.Component} [props.children] - Skeleton component to repeat
+ */
 export const GridSkeleton = ({ count = 8, children: SkeletonComponent = ProductCardSkeleton }) => {
     return (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">

@@ -1,4 +1,8 @@
 
+/**
+ * ProductSkeleton Component
+ * Loading placeholder for product cards
+ */
 const ProductSkeleton = () => {
     return (
         <div className="card p-4 animate-pulse">

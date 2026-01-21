@@ -1,8 +1,17 @@
-import { useEffect } from 'react';
 import { X, CheckCircle, XCircle, AlertCircle, Info } from 'lucide-react';
 import { useToastStore } from '../../store/useToastStore';
 import { cn } from '../../utils/cn';
 
+/**
+ * Toast Notification Component
+ * 
+ * @param {Object} props
+ * @param {Object} props.toast - Toast object
+ * @param {string} props.toast.type - success, error, warning, info
+ * @param {string} [props.toast.title] - Optional title
+ * @param {string} props.toast.message - Toast message
+ * @param {Function} props.onClose - Close callback
+ */
 const Toast = ({ toast, onClose }) => {
     const icons = {
         success: CheckCircle,
@@ -51,6 +60,12 @@ const Toast = ({ toast, onClose }) => {
     );
 };
 
+/**
+ * Toast Container
+ * Manages rendering of active toasts from store
+ * 
+ * @component
+ */
 const ToastContainer = () => {
     const { toasts, removeToast } = useToastStore();
 

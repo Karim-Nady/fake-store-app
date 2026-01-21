@@ -25,15 +25,14 @@ A modern e-commerce application built with React, demonstrating clean architectu
 - **State Management**: Zustand
 - **Routing**: React Router v6
 - **Form Handling**: React Hook Form
-- **Styling**: Tailwind CSS
+- **Styling**: Tailwind CSS + `clsx` + `tailwind-merge`
 - **Icons**: Lucide React
-- **API**: Fake Store API
+- **API**: Fake Store API + Modular Service Layer (Axios)
 
 ## 📦 Installation
-
 ```bash
 # Clone the repository
-git clone https://github.com/YOUR_USERNAME/fake-store-app.git
+git clone https://github.com/Karim-Nady/fake-store-app.git
 cd fake-store-app
 
 # Install dependencies
@@ -50,16 +49,25 @@ The app will open at `http://localhost:5173`
 ```
 src/
 ├── components/
-│   ├── common/         # Reusable UI components
-│   ├── products/       # Product-specific components
-│   ├── cart/          # Cart components
-│   └── layout/        # Layout components
-├── pages/             # Page components
-├── store/             # Zustand stores
-├── services/          # API service layer
-├── hooks/             # Custom React hooks
-└── utils/             # Helper functions
+│   ├── common/        # Atomic UI components (Badge, Button, Loaders, Toasts)
+│   ├── products/      # Product-specific components (Card, Grid, Filters)
+│   ├── cart/          # Cart & Checkout components
+│   ├── layout/        # App shell (Header, Footer)
+│   └── form/          # Form primitives (Input, Select, TextArea)
+├── pages/             # Route-level page components
+├── store/             # Global Store (Zustand)
+├── services/          # Modular API Layer (Auth, Products, Cart)
+├── hooks/             # Custom Logic Hooks
+└── utils/             # Formatters & Helpers
 ```
+
+## 🎨 Design Features
+
+- **Glassmorphism**: Translucent headers and overlays
+- **Micro-Interactions**: Hover states, ripple effects, and transitions
+- **System Feedback**: Comprehensive loading states (Skeletons) and error handling
+- **Semantic Color System**: Centralized design tokens
+- **Accessible Components**: Keyboard navigation and focus management
 
 ## 🎨 Design Features
 

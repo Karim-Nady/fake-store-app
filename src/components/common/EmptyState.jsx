@@ -1,5 +1,15 @@
 import { PackageOpen } from 'lucide-react';
 
+/**
+ * EmptyState Component
+ * Displays a message when no content is available
+ * 
+ * @param {Object} props
+ * @param {React.Component} [props.icon] - Icon component
+ * @param {string} [props.title] - Title
+ * @param {string} [props.description] - Description
+ * @param {React.ReactNode} [props.action] - Action button/link
+ */
 const EmptyState = ({
     icon: Icon = PackageOpen,
     title = 'No items found',

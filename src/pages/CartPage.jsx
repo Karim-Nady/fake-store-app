@@ -2,10 +2,9 @@ import { useNavigate } from 'react-router-dom';
 import { ShoppingBag, Trash2, ArrowLeft, ShoppingCart } from 'lucide-react';
 import { useCart } from '../hooks/useCart';
 import { toast } from '../store/useToastStore';
-import { formatCurrency } from '../utils/formatters';
 import Button from '../components/common/Button';
-import Card from '../components/common/Card';
 import CartItem from '../components/cart/CartItem';
+import CartSummary from '../components/cart/CartSummary';
 import EmptyState from '../components/common/EmptyState';
 
 const CartPage = () => {
@@ -85,7 +84,7 @@ const CartPage = () => {
                             className="text-danger-600 hover:bg-danger-50"
                         >
                             <Trash2 className="h-5 w-5" />
-                            Clear Cart
+                            <span className="hidden sm:inline">Clear Cart</span>
                         </Button>
                     </div>
                 </div>
@@ -103,77 +102,17 @@ const CartPage = () => {
                         ))}
                     </div>
 
-                    {/* Order Summary */}
+                    {/* Order Summary - Now using CartSummary component */}
                     <div className="lg:col-span-1">
-                        <div className="sticky top-24">
-                            <Card className="p-6">
-                                <h2 className="text-xl font-bold text-neutral-900 mb-6">
-                                    Order Summary
-                                </h2>
-
-                                <div className="space-y-3 mb-6">
-                                    <div className="flex justify-between text-neutral-700">
-                                        <span>Subtotal</span>
-                                        <span>{formatCurrency(total)}</span>
-                                    </div>
-                                    <div className="flex justify-between text-neutral-700">
-                                        <span>Shipping</span>
-                                        <span className="text-success-600">Free</span>
-                                    </div>
-                                    <div className="flex justify-between text-neutral-700">
-                                        <span>Tax (estimated)</span>
-                                        <span>{formatCurrency(total * 0.1)}</span>
-                                    </div>
-                                    <div className="border-t border-neutral-200 pt-3">
-                                        <div className="flex justify-between text-lg font-bold text-neutral-900">
-                                            <span>Total</span>
-                                            <span className="text-primary-600">
-                                                {formatCurrency(total * 1.1)}
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <Button
-                                    variant="primary"
-                                    size="lg"
-                                    className="w-full mb-3"
-                                    onClick={handleCheckout}
-                                >
-                                    Proceed to Checkout
-                                </Button>
-
-                                <Button
-                                    variant="outline"
-                                    size="lg"
-                                    className="w-full"
-                                    onClick={() => navigate('/')}
-                                >
-                                    Continue Shopping
-                                </Button>
-
-                                {/* Promotions */}
-                                <div className="mt-6 pt-6 border-t border-neutral-200">
-                                    <h3 className="font-semibold text-neutral-900 mb-3">
-                                        Promotions
-                                    </h3>
-                                    <ul className="space-y-2 text-sm text-neutral-600">
-                                        <li className="flex items-start gap-2">
-                                            <span className="text-success-600">✓</span>
-                                            <span>Free shipping on all orders</span>
-                                        </li>
-                                        <li className="flex items-start gap-2">
-                                            <span className="text-success-600">✓</span>
-                                            <span>30-day money-back guarantee</span>
-                                        </li>
-                                        <li className="flex items-start gap-2">
-                                            <span className="text-success-600">✓</span>
-                                            <span>Secure checkout</span>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </Card>
-                        </div>
+                        <CartSummary
+                            subtotal={total}
+                            itemCount={itemCount}
+                            onCheckout={handleCheckout}
+                            tax={0.1}
+                            shipping={0}
+                            discount={0}
+                            sticky={true}
+                        />
                     </div>
                 </div>
             </div>

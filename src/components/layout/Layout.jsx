@@ -3,11 +3,17 @@ import Header from './Header';
 import Footer from './Footer';
 import ToastContainer from '../common/Toast';
 
+/**
+ * Layout Component
+ * Main application layout wrapper
+ * 
+ * @component
+ */
 const Layout = () => {
     return (
         <div className="min-h-screen flex flex-col">
             <Header />
-            <main className="flex-1 container-custom py-8">
+            <main className="layout-content">
                 <Outlet />
             </main>
             <Footer />

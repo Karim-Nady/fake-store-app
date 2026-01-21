@@ -1,13 +1,13 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
-import { ArrowLeft, Package, CheckCircle, AlertCircle } from 'lucide-react';
+import { ArrowLeft, Package } from 'lucide-react';
 import { productService } from '../services/productService';
 import { useProductStore } from '../store/useProductStore';
 import { toast } from '../store/useToastStore';
 import Button from '../components/common/Button';
-import Input from '../components/common/Input';
-import TextArea from '../components/common/TextArea';
+import Input from '../components/form/Input';
+import TextArea from '../components/form/TextArea';
 import Card from '../components/common/Card';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 
